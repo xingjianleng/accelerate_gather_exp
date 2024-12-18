@@ -70,9 +70,15 @@ def main():
 
             # -------- Act Feats Detach --------- #
             # print(act_feats_detach.shape, act_feats_detach.device, act_feats_detach.grad_fn)
-            gather_act_feats_detach = accelerator.gather(act_feats_detach)
-            print(gather_act_feats_detach.shape, gather_act_feats_detach.device, gather_act_feats_detach.grad_fn)
+            # gather_act_feats_detach = accelerator.gather(act_feats_detach)
+            # print(gather_act_feats_detach.shape, gather_act_feats_detach.device, gather_act_feats_detach.grad_fn)
             # -------- Act Feats Detach --------- #
+
+            # -------- process id --------- #
+            print(accelerator.process_index)
+            gather_process_id = accelerator.gather([torch.tensor(accelerator.process_index, device=device)])
+            print(gather_process_id)
+            # -------- process id --------- #
 
             accelerator.backward(loss)
             accelerator.clip_grad_norm_(model.parameters(), max_norm=1.0)
