@@ -75,10 +75,21 @@ def main():
             # -------- Act Feats Detach --------- #
 
             # -------- process id --------- #
-            print(accelerator.process_index)
-            gather_process_id = accelerator.gather([torch.tensor(accelerator.process_index, device=device)])
-            print(gather_process_id)
+            # print(accelerator.process_index)
+            # gather_process_id = accelerator.gather([torch.tensor(accelerator.process_index, device=device)])
+            # print(gather_process_id)
             # -------- process id --------- #
+
+            # -------- list of list of [B, N, D] tensor --------- #
+            example = [
+                [torch.randn(2, 3, 4, device=device), torch.randn(2, 3, 4, device=device)],
+                [torch.randn(2, 3, 4, device=device), torch.randn(2, 3, 4, device=device)],
+                [torch.randn(2, 3, 4, device=device), torch.randn(2, 3, 4, device=device)],
+            ]
+            gather_example = accelerator.gather(example)
+            # print(len(example), len(example[0]), example[0][0].shape)
+            print(len(gather_example), len(gather_example[0]), gather_example[0][0].shape)
+            # -------- list of list of [B, N, D] tensor --------- #
 
             accelerator.backward(loss)
             accelerator.clip_grad_norm_(model.parameters(), max_norm=1.0)
